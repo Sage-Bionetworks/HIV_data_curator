@@ -12,7 +12,7 @@ library(purrr)
 library(plotly)
 
 #########global
-use_condaenv('py3.5', required = TRUE )
+use_condaenv('python3', required = TRUE ) #replace conda env name: was 'py3.5'
 reticulate::import("sys")
 reticulate::import_from_path("MetadataModel", path = "HTAN-data-pipeline")
 reticulate::import_from_path("ManifestGenerator", path = "HTAN-data-pipeline")

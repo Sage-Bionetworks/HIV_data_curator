@@ -35,8 +35,8 @@ ui <- dashboardPage(
             tags$style(".sidebar-toggle {height: 15px; padding-top: 25px !important;}"),
             tags$style(".navbar {min-height:50px !important}"),
             tags$style(".messages-menu {padding-top :5px}" ),
-            tags$a(href="https://humantumoratlas.org/", target = "_blank", 
-                   tags$img(height = "40px", alt = "FH LOGO", 
+            tags$a(href="https://research.fhcrc.org/emerman/en.html", target = "_blank", 
+                   tags$img(height = "50px", alt = "FH LOGO", 
                             src = "Fred_Hutch_logo.png"))) #,
     # dropdownMenu(type = "messages", icon = icon("user", "fa-2x")) ### dummy user icon
     ),

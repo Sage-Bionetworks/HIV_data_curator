@@ -48,7 +48,7 @@ get_proj_folder_manifest_cells_df <- function(synStore_obj, projects_namedList, 
   ### project to folder dataframe generation
   # get fileview of folders and files
   syn <- syn_login(sessionToken = sessionToken)
-  tab <- syn_tableQuery("select * from syn20446927", resultsAs='csv')
+  tab <- syn_tableQuery("select * from syn21823263", resultsAs='csv')
   tab <- read.csv(tab$filepath)
   # get just folders and match parent ID to project name
   projects_df <- stack(projects_namedList)

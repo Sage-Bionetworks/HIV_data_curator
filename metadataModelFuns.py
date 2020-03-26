@@ -4,9 +4,9 @@ from MetadataModel import MetadataModel
 from ManifestGenerator import ManifestGenerator
 
 #inputMModelLocation = "./schemas/exampleSchemaReq.jsonld"
-#inputMModelLocation = "./HTAN-data-pipeline/schemas/scRNASeq.jsonld"
-# inputMModelLocation = "./HTAN-data-pipeline/schemas/HTAPP.jsonld"
-inputMModelLocation = "./HTAN-data-pipeline/schemas/HTAN.jsonld"
+#inputMModelLocation = "./HIV-data-pipeline/schemas/scRNASeq.jsonld"
+# inputMModelLocation = "./HIV-data-pipeline/schemas/HTAPP.jsonld"
+inputMModelLocation = "./HIV-data-pipeline/schemas/HTAN.jsonld"
 inputMModelLocationType = "local"
 # datasetType = "scRNASeq"
 datasetType = "ScRNA-seq"

@@ -4,7 +4,7 @@ from SynapseStorage import SynapseStorage
 
 syn_get = syn.get
 
-storage_fileview = "syn20446927"
+storage_fileview = "syn21823263"
 
 syn = synapseclient.Synapse()
 syn.login()

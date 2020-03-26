@@ -69,8 +69,8 @@ ui <- dashboardPage(
                   status = "primary",
                   solidHeader = TRUE,
                   width= 6,
-                  title = "Choose a Project and Dataset: ",
-                  selectizeInput(inputId = "var", label = "Project:",
+                  title = "Choose a Dataset: ",
+                  selectizeInput(inputId = "var", label = "Dataset:",
                                  choices = "Generating..." ) , #names(projects_namedList) ),
                   uiOutput('folders')
                 ),
@@ -82,7 +82,7 @@ ui <- dashboardPage(
                   selectInput(
                     inputId = "template_type",
                     label = "Template:",
-                    choices = list("scRNA-seq v1.0") #, "scRNAseq") ## add mapping step from string to input
+                    choices = list("v1.0") #, "scRNAseq") ## add mapping step from string to input
                   ) ## HTAPP to Minimal Metadata
                 ) #,
                 # box(
@@ -235,7 +235,7 @@ server <- function(input, output, session) {
     })
 
     ### updating global vars with values for projects
-    synStore_obj <<- syn_store("syn20446927", token = input$cookie)
+    synStore_obj <<- syn_store("syn21823263", token = input$cookie)
     # get_projects_list(synStore_obj)
     projects_list <<- get_projects_list(synStore_obj)
 

@@ -70,7 +70,7 @@ ui <- dashboardPage(
                   solidHeader = TRUE,
                   width= 6,
                   title = "Choose a Dataset: ",
-                  selectizeInput(inputId = "var", label = "Dataset:",
+                  selectizeInput(inputId = "var", label = "Project:",
                                  choices = "Generating..." ) , #names(projects_namedList) ),
                   uiOutput('folders')
                 ),

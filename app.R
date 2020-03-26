@@ -14,8 +14,8 @@ library(plotly)
 #########global
 use_condaenv('python3', required = TRUE ) #replace conda env name: was 'py3.5'
 reticulate::import("sys")
-reticulate::import_from_path("MetadataModel", path = "HTAN-data-pipeline")
-reticulate::import_from_path("ManifestGenerator", path = "HTAN-data-pipeline")
+reticulate::import_from_path("MetadataModel", path = "HIV-data-pipeline")
+reticulate::import_from_path("ManifestGenerator", path = "HIV-data-pipeline")
 
 source_python("synLoginFun.py")
 source_python("metadataModelFuns.py")
@@ -25,7 +25,7 @@ source("functions.R")
 #########
 
 ui <- dashboardPage(
-  skin = "purple",
+  skin = "green",
   dashboardHeader(
     titleWidth = 250,
     title = "Data Curator",
@@ -36,8 +36,8 @@ ui <- dashboardPage(
             tags$style(".navbar {min-height:50px !important}"),
             tags$style(".messages-menu {padding-top :5px}" ),
             tags$a(href="https://humantumoratlas.org/", target = "_blank", 
-                   tags$img(height = "40px", alt = "HTAN LOGO", 
-                            src = "HTAN_text_logo.png"))) #,
+                   tags$img(height = "40px", alt = "FH LOGO", 
+                            src = "Fred_Hutch_logo.png"))) #,
     # dropdownMenu(type = "messages", icon = icon("user", "fa-2x")) ### dummy user icon
     ),
   dashboardSidebar( width = 250, 

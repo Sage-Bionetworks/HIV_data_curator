@@ -31,7 +31,7 @@ ui <- dashboardPage(
     title = "Data Curator",
     tags$li(class = "dropdown",
             tags$style(".main-header {max-height: 50px}"),
-            tags$style(".main-header .logo {height: 70px; font-size: 28px; padding-top: 10px}"),
+            tags$style(".main-header .logo {height: 80px; font-size: 28px; padding-top: 15px}"),
             tags$style(".sidebar-toggle {height: 15px; padding-top: 25px !important;}"),
             tags$style(".navbar {min-height:50px !important}"),
             tags$style(".messages-menu {padding-top :5px}" ),

@@ -8,7 +8,7 @@
 # py_discover_config()
 
 # reticulate::import("sys")
-# reticulate::import_from_path("MetadataModel", path = "HTAN-data-pipeline")
+# reticulate::import_from_path("MetadataModel", path = "HIV-data-pipeline")
 
 # source_python("synStore_Session.py")
 
@@ -119,14 +119,14 @@ get_proj_folder_manifest_cells_df <- function(synStore_obj, projects_namedList, 
       manifest_cells[i,6] <- per_filled
       
       
-      HTAN_cols <- manifest_df[, c("HTAN.Participant.ID", "HTAN.Sample.ID")]
+      HIV_cols <- manifest_df[, c("HIV.Participant.ID", "HIV.Sample.ID")]
       # how to count empty cells vs all cells
-      dim_val <- dim(HTAN_cols)
+      dim_val <- dim(HIV_cols)
       total_cells <- dim_val[1] * dim_val[2]
-      empty_cells <- table(is.na(HTAN_cols))
+      empty_cells <- table(is.na(HIV_cols))
       per_filled <- (empty_cells[1] / total_cells )* 100
       
-      manifest_cells[i,7] <- "HTAN_IDs"
+      manifest_cells[i,7] <- "HIV_IDs"
       manifest_cells[i,8] <- total_cells
       manifest_cells[i,9] <- empty_cells[1] ## filled, empty= F
       manifest_cells[i,10] <- per_filled
@@ -137,7 +137,7 @@ get_proj_folder_manifest_cells_df <- function(synStore_obj, projects_namedList, 
       manifest_cells[i,5] <- 0
       manifest_cells[i,6] <- 0
 
-      manifest_cells[i,7] <- "HTAN_IDs"
+      manifest_cells[i,7] <- "HIV_IDs"
       manifest_cells[i,8] <- 0
       manifest_cells[i,9] <- 0 ## filled, empty= F
       manifest_cells[i,10] <- 0

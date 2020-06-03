@@ -2,8 +2,8 @@ import pandas as pd
 import networkx as nx
 import json
 import re
-from jsonschema import validate, ValidationError
 
+from jsonschema import Draft7Validator, exceptions, validate, ValidationError
 
 # allows specifying explicit variable types
 from typing import Any, Dict, Optional, Text
@@ -12,7 +12,7 @@ from typing import Any, Dict, Optional, Text
 # as collaboration with Biothings progresses
 from schema_explorer import SchemaExplorer
 from ManifestGenerator import ManifestGenerator
-from schema_generator import get_JSONSchema_requirements
+from schema_generator import get_JSONSchema_requirements, get_component_requirements, get_descendants_by_edge_type
 
 class MetadataModel(object):
 
@@ -52,6 +52,11 @@ class MetadataModel(object):
      def inputMModelLocation(self) -> str:
          """Gets or sets the inputMModelLocation path"""
          return self.__inputMModelLocation
+
+     @property
+     def se(self) -> SchemaExplorer:
+         return self.__se
+
 
      @inputMModelLocation.setter
      def inputMModelLocation(self, inputMModelLocation) -> None:
@@ -109,10 +114,27 @@ class MetadataModel(object):
          """
          pass
 
+     def getOrderedModelNodes(self, rootNode: str, relationshipType: str) -> list:
+        """ get a list of model objects ordered by their topological sort rank in a model subgraph on edges of a given relationship type.
 
-     def getModelManifest(self, title, rootNode:str, filenames:list = None) -> str: 
+        Args:
+          rootNode: a schema object/node label (i.e. term); all returned nodes will be this node's descendants
+          relationshipType: edge label type of the schema subgraph (e.g. requiresDependency)
+        Returns: an ordered list of objects 
+         Raises: TODO 
+             ValueError: rootNode not found in metadata model.
+        """
 
+        ordered_nodes = get_descendants_by_edge_type(self.se.schema_nx, rootNode, relationshipType, connected = True, ordered = True)
+
+        ordered_nodes.reverse()
+
+        return ordered_nodes
+
+    
+     def getModelManifest(self, title:str, rootNode:str, filenames:list = None) -> str: 
          """ get annotations manifest dataframe 
+         TBD: DOes this method belong here or in manifest generator?
          Args:
           rootNode: a schema node label (i.e. term)
         
@@ -129,6 +151,26 @@ class MetadataModel(object):
 
          return mg.get_manifest()
 
+
+     def get_component_requirements(self, source_component: str) -> list:
+
+        """ Given a source model component (see https://w3id.org/biolink/vocab/category for definnition of component), return all components required by it. Useful to construct requirement dependencies not only between specific attributes but also between categories/components of attributes; can be utilized to track metadata copletion progress across multiple categories of attributes.
+        Args: 
+            source_component: an attribute label indicating the source component
+
+        Returns: a list of required components associated with the source component
+        """
+        
+        # get metadata model schema graph
+        mm_graph = self.se.get_nx_schema()
+
+        # get required components for the input component
+        req_components = get_component_requirements(mm_graph, source_component) 
+
+        return req_components
+
+
+    # TODO: abstract validation in its own module
 
      def validateModelManifest(self, manifestPath:str, rootNode:str, jsonSchema:str = None) -> list:
          
@@ -149,55 +191,28 @@ class MetadataModel(object):
          if not jsonSchema:
              jsonSchema = get_JSONSchema_requirements(self.se, rootNode, rootNode + "_validation")
          
+         errors = []
+ 
          # get annotations from manifest (array of json annotations corresponding to manifest rows)
-
          manifest = pd.read_csv(manifestPath).fillna("")
-         manifest_trimmed = manifest.apply(lambda x: x.str.strip() if x.dtype == "object" else x)###remove whitespaces from manifest
+
+         # remove whitespaces from manifest 
+         manifest_trimmed = manifest.apply(lambda x: x.str.strip() if x.dtype == "str" else x)
+        
          annotations = json.loads(manifest_trimmed.to_json(orient='records'))
-
-         errorPositions = []
-         for i, annotation in enumerate(annotations):
-             
-             try:
-                validate(instance = annotation, schema = jsonSchema)
-             # this error parsing is too brittle; if something changes in the validator code outputting the validation error we'd have to change the logic; TODO: provide a more robust error parsing
-             except ValidationError as e:
-                listExp = re.compile('\[(.*?)\]')
-                
-                errorRow = i + 2 # row in the manifest where the error occurred
-
-                # parse the validation error in a more human readable form
-                errorMessage = "At row " + str(errorRow) + ": "
-                
-                errors = str(e).split("\n")
-                
-                stringExp = re.compile('\'(.*?)\'')
-
-                # extract wrong value entered
-                errorValue = stringExp.findall(errors[0])[0]
-
-                errorMessage += errors[0]
-                
-                # extract allowed values, if any, for the term that was erroneously filled in
-                allowedValues = listExp.findall(errorMessage)
-                
-                if allowedValues:
-                    allowedValues = allowedValues[0].replace('\'', '').split(", ")
-                
-                errorDetail = errors[-2].replace("On instance", "At term")
-
-                #extract the term(s) that had erroneously filled in values, if any
-                errorTerms = listExp.findall(errorDetail)
-                if errorTerms:
-                    errorTerms = errorTerms[0].replace('\'','').split(", ")[0]
-
-                errorMessage += "; " + errorDetail
-                errorDetail = " value " + errors[-1].strip() + " is invalid;"
-                errorMessage += errorDetail
-
-                errorPositions.append((errorRow, errorTerms, errorValue, allowedValues))
          
-         return errorPositions
+         for i, annotation in enumerate(annotations):
+         
+             v = Draft7Validator(jsonSchema)
+             for error in sorted(v.iter_errors(annotation), key=exceptions.relevance):
+                 errorRow = i + 2
+                 errorCol = error.path[-1] if len(error.path) > 0 else "Wrong schema" 
+                 errorMsg = error.message[0:500]
+                 errorVal = error.instance if len(error.path) > 0 else "Wrong schema"
+
+                 errors.append([errorRow, errorCol, errorMsg, errorVal])
+                
+         return errors
 
      
      def populateModelManifest(self, title, manifestPath:str, rootNode:str) -> str:
@@ -213,8 +228,10 @@ class MetadataModel(object):
          Raises: TODO 
             ValueError: rootNode not found in metadata model.
          """
-         mg = ManifestGenerator(title, self.se, rootNode, {"Filename":[]})
+         #mg = ManifestGenerator(title, self.se, rootNode, {"Filename":[]})
+         
+         mg = ManifestGenerator(title, self.se, rootNode)
          emptyManifestURL = mg.get_manifest()
 
-         return mg.populate_manifest_spreasheet(manifestPath, emptyManifestURL)
+         return mg.populate_manifest_spreadsheet(manifestPath, emptyManifestURL)
 

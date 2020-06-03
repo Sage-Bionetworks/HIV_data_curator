@@ -6,21 +6,25 @@ from ManifestGenerator import ManifestGenerator
 #inputMModelLocation = "./schemas/exampleSchemaReq.jsonld"
 #inputMModelLocation = "./HIV-data-pipeline/schemas/scRNASeq.jsonld"
 # inputMModelLocation = "./HIV-data-pipeline/schemas/HTAPP.jsonld"
-inputMModelLocation = "./HIV-data-pipeline/schemas/HTAN.jsonld"
+inputMModelLocation = "./HIV-data-pipeline/schemas/HIV.jsonld"
 inputMModelLocationType = "local"
 # datasetType = "scRNASeq"
-datasetType = "ScRNA-seq"
+# modelType = "TableA"
 
 mm = MetadataModel(inputMModelLocation, inputMModelLocationType)
 
 ### function for getting model Manifest
-#  mm.getModelManifest(datasetType, additionalMetadata = {"Filename":["MantonCB1_HiSeq_1_S1_L001_R1_001.fastq.gz"]} )
+#  mm.getModelManifest(modelType, additionalMetadata = {"Filename":["MantonCB1_HiSeq_1_S1_L001_R1_001.fastq.gz"]} )
 getModelManifest = mm.getModelManifest
 
 ### function for validating manifest
 # mm.validateModelManifest(manifest_path, datasetType)
 validateModelManifest = mm.validateModelManifest
 
-
 ### populates manifest with path to csv
 populateModelManifest = mm.populateModelManifest
+
+### gets dependencies
+# "Generating dependency graph and ordering dependencies")
+# dependencies = mm.getOrderedModelNodes(component, "requiresDependency")
+getDependencies = mm.getOrderedModelNodes

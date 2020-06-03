@@ -6,7 +6,7 @@ from ManifestGenerator import ManifestGenerator
 #inputMModelLocation = "./schemas/exampleSchemaReq.jsonld"
 #inputMModelLocation = "./HIV-data-pipeline/schemas/scRNASeq.jsonld"
 # inputMModelLocation = "./HIV-data-pipeline/schemas/HTAPP.jsonld"
-inputMModelLocation = "./HIV-data-pipeline/schemas/HIV.jsonld"
+inputMModelLocation = "./HIV-data-pipeline/schemas/HTAN.jsonld"
 inputMModelLocationType = "local"
 # datasetType = "scRNASeq"
 # modelType = "TableA"

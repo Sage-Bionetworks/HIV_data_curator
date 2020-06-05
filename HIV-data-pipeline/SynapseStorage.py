@@ -145,47 +145,63 @@ class SynapseStorage(object):
 
         return projects
 
+#    def getStorageDatasetsInProject(self, projectId: str) -> List[str]:
+#        """Gets all datasets in folder under a given storage project that the current user has access to.
+#
+#        Args:
+#            projectId: synapse ID of a storage project.
+#
+#        Returns: 
+#            A list of datasets within the given storage project; the list consists of tuples (datasetId, datasetName).
+#        
+#        Raises:
+#            ValueError: Project ID not found.
+#        """
+#        
+#        # select all folders and fetch their names from within the storage project; 
+#        # if folder content type is defined, only select folders that contain datasets
+#        areDatasets = False
+#        if "contentType" in self.storageFileviewTable.columns:
+#            foldersTable = self.storageFileviewTable[(self.storageFileviewTable["contentType"] == "dataset") & (self.storageFileviewTable["projectId"] == projectId)]
+#            areDatasets = True
+#        else:
+#            foldersTable = self.storageFileviewTable[(self.storageFileviewTable["type"] == "folder") & (self.storageFileviewTable["projectId"] == projectId)]
+#
+#        # get an array of tuples (folderId, folderName)
+#        # some folders are part of datasets; others contain datasets
+#        # each dataset parent is the project; folders part of a dataset have another folder as a parent
+#        # to get folders if and only if they contain datasets for each folder 
+#        # check if folder's parent is the project; if so that folder contains a dataset,
+#        # unless the folder list has already been filtered to dataset folders based on contentType attribute above
+#        
+#        datasetList = []
+#        folderProperties = ["id", "name"]
+#        for folder in list(foldersTable[folderProperties].itertuples(index = False, name = None)):
+#            try:
+#                if self.syn.get(folder[0], downloadFile = False).properties["parentId"] == projectId or areDatasets:
+#                    datasetList.append(folder)
+#            except ValueError:
+#                print("The project id {} was not found.".format(projectId))
+#
+#        return datasetList
 
-    def getStorageDatasetsInProject(self, projectId: str) -> List[str]:
-        """Gets all datasets in folder under a given storage project that the current user has access to.
-
-        Args:
-            projectId: synapse ID of a storage project.
-
-        Returns: 
-            A list of datasets within the given storage project; the list consists of tuples (datasetId, datasetName).
+    def getStorageDatasetsInProject(self, projectId: str) -> list:
         
-        Raises:
+        """ get all datasets in folder under a given storage projects the current user has access to
+        Args:
+            projectId: synapse ID of a storage project
+        Returns: a list of datasets within the given storage project; the list consists of tuples (datasetId, datasetName)
+        Raises: TODO
             ValueError: Project ID not found.
         """
         
-        # select all folders and fetch their names from within the storage project; 
-        # if folder content type is defined, only select folders that contain datasets
-        areDatasets = False
-        if "contentType" in self.storageFileviewTable.columns:
-            foldersTable = self.storageFileviewTable[(self.storageFileviewTable["contentType"] == "dataset") & (self.storageFileviewTable["projectId"] == projectId)]
-            areDatasets = True
-        else:
-            foldersTable = self.storageFileviewTable[(self.storageFileviewTable["type"] == "folder") & (self.storageFileviewTable["projectId"] == projectId)]
+        # select all folders and their names w/in the storage project
+        foldersTable = self.storageFileviewTable[(self.storageFileviewTable["type"] == "folder") & (self.storageFileviewTable["projectId"] == projectId)]
 
-        # get an array of tuples (folderId, folderName)
-        # some folders are part of datasets; others contain datasets
-        # each dataset parent is the project; folders part of a dataset have another folder as a parent
-        # to get folders if and only if they contain datasets for each folder 
-        # check if folder's parent is the project; if so that folder contains a dataset,
-        # unless the folder list has already been filtered to dataset folders based on contentType attribute above
-        
-        datasetList = []
-        folderProperties = ["id", "name"]
-        for folder in list(foldersTable[folderProperties].itertuples(index = False, name = None)):
-            try:
-                if self.syn.get(folder[0], downloadFile = False).properties["parentId"] == projectId or areDatasets:
-                    datasetList.append(folder)
-            except ValueError:
-                print("The project id {} was not found.".format(projectId))
+        # return an array of tuples (folderId, folderName)
+        folderList = list(foldersTable[["id", "name"]].itertuples(index = False, name = None))
 
-        return datasetList
-
+        return folderList
 
     def getFilesInStorageDataset(self, datasetId: str, fileNames: List = None) -> List[str]:
         """Gets all files in a given dataset folder.

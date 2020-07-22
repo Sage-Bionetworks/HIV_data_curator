@@ -1,1 +1,3 @@
-CancerType,LibraryConstructionMethod,HTANParticipantID,Filename,HTANSampleID,entityId
+Component,HTAN Patient ID,Relative with Cancer History,Filename,Relationship Age at Diagnosis,Relationship Gender,Relationship Primary Diagnosis,Relationship Type,Relatives with Cancer History Count,entityId
+FamilyHistory,test001,Yes - Cancer History Relative,file1.csv,,,,,,syn22140537
+FamilyHistory,test002,None,file2.csv,,,,,,syn22140538

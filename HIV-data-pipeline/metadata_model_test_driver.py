@@ -26,7 +26,8 @@ print("*****************************************************")
 # this credentials file is also stored on Synapse and can be retrieved given sufficient permissions to the Synapse project
 
 # Google API credentials file stored on Synapse 
-credentials_syn_file = "syn21088684"
+credentials_syn_file = "syn22048573" # HIV 
+#credentials_syn_file = "syn21088684" # HTAN
 
 
 # try downloading credentials file, if needed 
@@ -42,11 +43,13 @@ if not os.path.exists("./credentials.json"):
 
 print("Google API credentials successfully located")
 
+
 print("Testing manifest generation based on a provided Schema.org schema")
 manifestURL = mm.getModelManifest("Test_" + component, component, filenames = ["1.txt", "2.txt", "3.txt"])
 
 print(manifestURL)
 
+"""
 print("Testing manifest generation based on a provided jsonSchema")
 jsonSchemaFile = "./schemas/minimalHTAPPJSONSchema.json"
 with open(jsonSchemaFile, "r") as f:
@@ -113,3 +116,4 @@ with open(component + "component_dependencies.json", "w") as f:
     json.dump(dependencies, f, indent = 3)
 
 print("Component dependencies stored: " + component + "component_dependencies.json")
+"""

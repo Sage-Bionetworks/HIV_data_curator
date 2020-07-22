@@ -528,7 +528,9 @@ def get_JSONSchema_requirements(se, root, schema_name):
     if not json_schema["allOf"]:
         del json_schema["allOf"]
     
-    with open("./HTAN-data-pipeline/schemas/json_schema_log.json", "w") as js_f:
+   #commented out for testing 
+    with open("./HIV-data-pipeline/schemas/json_schema_log.json", "w") as js_f:
+   #with open("./schemas/json_schema_log.json", "w") as js_f:
         json.dump(json_schema, js_f, indent = 2)
     
     print("Schema file log stored as ./schemas/json_schema_log.json")

@@ -1,0 +1,11 @@
+[
+   "Demographics",
+   "FamilyHistory",
+   "Exposure",
+   "FollowUp",
+   "Diagnosis",
+   "Therapy",
+   "Patient",
+   "Biospecimen",
+   "ScRNA-seqAssay"
+]

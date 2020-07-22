@@ -99,7 +99,7 @@ ui <- dashboardPage(
                   selectInput(
                     inputId = "template_type",
                     label = "Template:",
-                    choices = list("v1.0")
+                    choices = list("v1.0","ScRNA-seqAssay","FamilyHistory") #add for testing
                     ## add mapping step from string to input when I have more time ##
                   )
                 )
@@ -312,7 +312,7 @@ server <- function(input, output, session) {
         ### if the manifest already exists
         manifest_entity <- syn_get(existing_manifestID)
         # prepopulatedManifestURL = mm.populateModelManifest("test_update", entity.path, component)
-        manifest_url <- populateModelManifest(paste0("HIV_", input$template_type), manifest_entity$path, input$template_type)
+        manifest_url <- populateModelManifest(paste0("HIV ", input$template_type), manifest_entity$path, input$template_type)
         toggle('text_div3')
 
         output$text <- renderUI({
@@ -447,7 +447,7 @@ server <- function(input, output, session) {
 
       ### IF an assay component selected and has filename col
       ### and adds entityID, saves it as synapse_storage_manifest.csv, then associates with synapse files
-      if ( input$template_type %in% list("v1.0") ) {
+      if ( input$template_type %in% list("v1.0","ScRNA-seqAssay","FamilyHistory") ) { #add for testing
 
         ### make into a csv or table for assay components
         ### already has entityId

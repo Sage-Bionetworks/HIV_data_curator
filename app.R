@@ -224,7 +224,7 @@ server <- function(input, output, session) {
     synStore_obj <<- syn_store("syn21823263", token = input$cookie)
 
     # get_projects_list(synStore_obj)
-    projects_list <<- get_projects_list(synStore_obj)
+    projects_list <<- syn_store$getStorageProjects(synStore_obj)
 
     for (i in seq_along(projects_list)) {
       projects_namedList[projects_list[[i]][[2]]] <<- projects_list[[i]][[1]]
@@ -285,7 +285,7 @@ list_tabs <- c("instructions", "data", "template", "upload")
                      project_synID <- projects_namedList[[selected_project]] ### get synID of selected project
 
                      ### gets folders per project
-                     folder_list <- get_folder_list(synStore_obj, project_synID)
+                     folder_list <- syn_store$getStorageDatasetsInProject(synStore_obj, project_synID)
                      folders_namedList <- c()
                      for (i in seq_along(folder_list)) {
                        folders_namedList[folder_list[[i]][[2]]] <- folder_list[[i]][[1]]
@@ -310,7 +310,7 @@ list_tabs <- c("instructions", "data", "template", "upload")
 
       project_synID <- projects_namedList[[selected_project]] ### get synID of selected project
 
-      folder_list <- get_folder_list(synStore_obj, project_synID)
+      folder_list <- syn_store$getStorageDatasetsInProject(synStore_obj, project_synID)
       folders_namedList <- c()
       for (i in seq_along(folder_list)) {
         folders_namedList[folder_list[[i]][[2]]] <- folder_list[[i]][[1]]
@@ -318,13 +318,13 @@ list_tabs <- c("instructions", "data", "template", "upload")
       folder_synID <- folders_namedList[[selected_folder]]
       # showNotification( folder_synID, duration = NULL, type = "warning")
 
-      ### checks if a manifest already exists
-      existing_manifestID <- get_update_manifestId(synStore_obj, folder_synID)
+      ### checks if a manifest already exists: get_update_manifestId
+      existing_manifestID <- syn_store$updateDatasetManifestFiles(synStore_obj, folder_synID)
       # showNotification( paste0("existing manifest: ", existing_manifestID) , duration = NULL, type = "warning")
 
       ### if there isn't an existing manifest make a new one
       if (existing_manifestID == '') {
-        file_list <- get_file_list(synStore_obj, folder_synID)
+        file_list <- syn_store$getFilesInStorageDataset(synStore_obj, folder_synID)
         file_namedList <- c()
         for (i in seq_along(file_list)) {
           file_namedList[file_list[[i]][[2]]] <- file_list[[i]][[1]]
@@ -498,7 +498,7 @@ list_tabs <- c("instructions", "data", "template", "upload")
           selected_project <- input$var
 
           project_synID <- projects_namedList[[selected_project]] ### get synID of selected project
-          folder_list <- get_folder_list(synStore_obj, project_synID)
+          folder_list <- syn_store$getStorageDatasetsInProject(synStore_obj, project_synID)
           folders_namedList <- c()
           for (i in seq_along(folder_list)) {
             folders_namedList[folder_list[[i]][[2]]] <- folder_list[[i]][[1]]
@@ -506,7 +506,7 @@ list_tabs <- c("instructions", "data", "template", "upload")
 
           folder_synID <- folders_namedList[[selected_folder]]
 
-          file_list <- get_file_list(synStore_obj, folder_synID)
+          file_list <- syn_store$getFilesInStorageDataset(synStore_obj, folder_synID)
           file_namedList <- c()
           for (i in seq_along(file_list)) {
             file_namedList[file_list[[i]][[2]]] <- file_list[[i]][[1]]
@@ -523,7 +523,7 @@ list_tabs <- c("instructions", "data", "template", "upload")
 
         project_synID <- projects_namedList[[selected_project]] ### get synID of selected project
 
-        folder_list <- get_folder_list(synStore_obj, project_synID)
+        folder_list <- syn_store$getStorageDatasetsInProject(synStore_obj, project_synID)
         folders_namedList <- c()
         for (i in seq_along(folder_list)) {
           folders_namedList[folder_list[[i]][[2]]] <- folder_list[[i]][[1]]
@@ -531,7 +531,7 @@ list_tabs <- c("instructions", "data", "template", "upload")
         folder_synID <- folders_namedList[[selected_folder]]
 
         ### associates metadata with data and returns manifest id
-        manifest_id <- get_associated_manifestId(synStore_obj, "./files/synapse_storage_manifest.csv", folder_synID)
+        manifest_id <- syn_store$associateMetadataWithFiles(synStore_obj, "./files/synapse_storage_manifest.csv", folder_synID)
         print(manifest_id)
         manifest_path <- paste0("synapse.org/#!Synapse:", manifest_id)
         ### if no error
@@ -575,7 +575,7 @@ list_tabs <- c("instructions", "data", "template", "upload")
         project_synID <- projects_namedList[[selected_project]] ### get synID of selected project
         # folder_synID <- get_folder_synID(synStore_obj, project_synID, selected_folder)
 
-        folder_list <- get_folder_list(synStore_obj, project_synID)
+        folder_list <- syn_store$getStorageDatasetsInProject(synStore_obj, project_synID)
         folders_namedList <- c()
         for (i in seq_along(folder_list)) {
           folders_namedList[folder_list[[i]][[2]]] <- folder_list[[i]][[1]]
@@ -583,7 +583,7 @@ list_tabs <- c("instructions", "data", "template", "upload")
         folder_synID <- folders_namedList[[selected_folder]]
 
         ### associates metadata with data and returns manifest id
-        manifest_id <- get_associated_manifestId(synStore_obj, "./files/synapse_storage_manifest.csv", folder_synID)
+        manifest_id <- syn_store$associateMetadataWithFiles(synStore_obj, "./files/synapse_storage_manifest.csv", folder_synID)
         print(manifest_id)
         manifest_path <- paste0("synapse.org/#!Synapse:", manifest_id)
 

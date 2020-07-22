@@ -15,8 +15,6 @@ library(shinypop)
 #########global
 use_condaenv('python3', required = TRUE ) #replace conda env name: was 'py3.5'
 reticulate::import("sys")
-reticulate::import_from_path("MetadataModel", path = "HIV-data-pipeline")
-reticulate::import_from_path("ManifestGenerator", path = "HIV-data-pipeline")
 
 source_python("synLoginFun.py")
 source_python("metadataModelFuns.py")
@@ -40,9 +38,11 @@ ui <- dashboardPage(
                    tags$img(height = "50px", alt = "FH LOGO", 
                             src = "Fred_Hutch_logo.png"))) #,
     ),
-  dashboardSidebar( width = 250, 
+  dashboardSidebar( 
+    width = 250, 
     tags$style(".left-side, .main-sidebar {padding-top: 80px; font-weight: bold; font-size: 1.1em } "),
     sidebarMenu(
+      id = "tabs",
       menuItem("Instructions", tabName = "instructions", icon = icon("book-open")),
       menuItem("Select your Dataset", tabName = "data", icon = icon("mouse-pointer")),
       menuItem("Get Metadata Template", tabName = "template", icon = icon("table")),
@@ -59,10 +59,9 @@ ui <- dashboardPage(
               width: 100%;
              }
              "),
-        "#shiny-notification-error {height: 500px; padding :20px; display: table-cell}
+                "#shiny-notification-error {height: 500px; padding :20px; display: table-cell}
                  #shiny-notification-processing {background-color: #F7DC6F}
                  #shiny-notification-success {background-color : #82E0AA}"
-
       ),
       singleton(
         includeScript("www/readCookie.js")
@@ -172,7 +171,8 @@ ui <- dashboardPage(
                 )
               )
       )
-    )
+    ),
+    uiOutput("Next_Previous")
   )
 )
 
@@ -235,7 +235,45 @@ server <- function(input, output, session) {
     removeNotification(id = "processing",)
 
   })
+  
+###### BUTTONS STUFF  !!! remove last arrow 
+  Previous_Button=tags$div(actionButton("Prev_Tab",HTML('
+<div class="col-sm-4"><i class="fa fa-angle-double-left fa-2x"></i></div>
+')))
+  Next_Button=div(actionButton("Next_Tab",HTML('
+<div class="col-sm-4"><i class="fa fa-angle-double-right fa-2x"></i></div>
+')))
 
+list_tabs <- c("instructions", "data", "template", "upload")
+
+  output$Next_Previous <- renderUI({
+    
+    tab_list=list_tabs
+    if ( input[["tabs"]] == "upload" ){
+      # column(1,offset=1,Previous_Button)
+    } else if (input[["tabs"]] == "instructions" ) {
+      column(1,offset = 10,Next_Button)
+    } else {
+      div(column(1,offset=1,Previous_Button),column(1,offset=8,Next_Button))
+    }
+  })
+
+  observeEvent(input$Prev_Tab,
+              {
+                tab_list=list_tabs
+                current_tab=which(tab_list==input[["tabs"]])
+                updateTabItems(session,"tabs",selected=tab_list[current_tab-1])
+              })
+
+  observeEvent(input$Next_Tab,
+              {
+                tab_list=list_tabs
+                current_tab=which(tab_list==input[["tabs"]])
+                updateTabItems(session,"tabs",selected=tab_list[current_tab+1])
+              })
+
+  ####### BUTTONS END
+  
   ### lists folder datasets if exists in project
   observeEvent(ignoreNULL = TRUE, ignoreInit = TRUE,
                input$var, {
@@ -294,7 +332,7 @@ server <- function(input, output, session) {
         filename_list <- names(file_namedList)
 
 
-        manifest_url <- getModelManifest(paste0("HIV ", input$template_type), input$template_type, filenames = as.list(filename_list) ) ### make sure not scalar if length of list is 1 in R
+        manifest_url <- metadata_model$getModelManifest(paste0("HIV ", input$template_type), input$template_type, filenames = as.list(filename_list) ) ### make sure not scalar if length of list is 1 in R
         ## add in the step to convert names later ###
 
 
@@ -312,7 +350,7 @@ server <- function(input, output, session) {
         ### if the manifest already exists
         manifest_entity <- syn_get(existing_manifestID)
         # prepopulatedManifestURL = mm.populateModelManifest("test_update", entity.path, component)
-        manifest_url <- populateModelManifest(paste0("HIV_", input$template_type), manifest_entity$path, input$template_type)
+        manifest_url <- metadata_model$populateModelManifest(paste0("HIV ", input$template_type), manifest_entity$path, input$template_type)
         toggle('text_div3')
 
         output$text <- renderUI({
@@ -350,7 +388,7 @@ server <- function(input, output, session) {
   ### toggles validation status when validate button pressed
   observeEvent(
     input$validate, {
-      annotation_status <- validateModelManifest(input$file1$datapath, input$template_type)
+      annotation_status <- metadata_model$validateModelManifest(input$file1$datapath, input$template_type)
       # showNotification(input$file1$datapath, duration = NULL, type = "default")
 
       toggle('text_div2')
@@ -360,7 +398,7 @@ server <- function(input, output, session) {
       if (length(annotation_status) != 0) {
 
         ## if error not empty aka there is an error
-        filled_manifest <- populateModelManifest(paste0("HTAN_", input$template_type), input$file1$datapath, input$template_type)
+        filled_manifest <- metadata_model$populateModelManifest(paste0("HIV ", input$template_type), input$file1$datapath, input$template_type)
 
         ### create list of string names for the error messages if there is more than one at a time
         str_names <- c()

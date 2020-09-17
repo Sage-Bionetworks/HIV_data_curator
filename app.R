@@ -102,7 +102,7 @@ ui <- dashboardPage(
                     inputId = "template_type",
                     label = "Template:",
                     # choices = list("ScRNA-seqAssay", "BulkRNA-seqAssay", "BulkRNA-seqAlignment", "Demographics", "Diagnosis", "FamilyHistory", "Exposure", "FollowUp", "Therapy")
-                    choices = list("v1.0")#, "scRNA-seq Level 1", "Bulk RNA-seq Level 1", "Bulk RNA-seq Level 2"," Clinical Tier 1: Demographics"," Clinical Tier 1: Diagnosis"," Clinical Tier 1: FamilyHistory"," Clinical Tier 1: Exposure"," Clinical Tier 1: FollowUp"," Clinical Tier 1: Therapy")
+                    choices = list("v1.1")#, "scRNA-seq Level 1", "Bulk RNA-seq Level 1", "Bulk RNA-seq Level 2"," Clinical Tier 1: Demographics"," Clinical Tier 1: Diagnosis"," Clinical Tier 1: FamilyHistory"," Clinical Tier 1: Exposure"," Clinical Tier 1: FollowUp"," Clinical Tier 1: Therapy")
 ## add mapping step from string to input when I have more time ##
                   )
                 )
@@ -305,7 +305,7 @@ list_tabs <- c("instructions", "data", "template", "upload")
 
 ### mapping from display name to schema name
 schema_name  <- c("FHA-HIV")#, "ScRNA-seqAssay", "BulkRNA-seqAssay", "BulkRNA-seqAlignment", "Demographics", "Diagnosis", "FamilyHistory", "Exposure", "FollowUp", "Therapy")
-display_name <- c("v1.0")#, "scRNA-seq Level 1", "Bulk RNA-seq Level 1", "Bulk RNA-seq Level 2"," Clinical Tier 1: Demographics"," Clinical Tier 1: Diagnosis"," Clinical Tier 1: FamilyHistory"," Clinical Tier 1: Exposure"," Clinical Tier 1: FollowUp"," Clinical Tier 1: Therapy")
+display_name <- c("v1.1")#, "scRNA-seq Level 1", "Bulk RNA-seq Level 1", "Bulk RNA-seq Level 2"," Clinical Tier 1: Demographics"," Clinical Tier 1: Diagnosis"," Clinical Tier 1: FamilyHistory"," Clinical Tier 1: Exposure"," Clinical Tier 1: FollowUp"," Clinical Tier 1: Therapy")
 
 schema_to_display_lookup <- data.frame(schema_name, display_name)
 

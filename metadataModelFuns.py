@@ -1,12 +1,12 @@
 # import json
 # import os
-from ingresspipe.models.metadata import MetadataModel
-from ingresspipe.manifest.generator import ManifestGenerator
+from schematic.models.metadata import MetadataModel
+from schematic.manifest.generator import ManifestGenerator
 
 #inputMModelLocation = "./schemas/exampleSchemaReq.jsonld"
 #inputMModelLocation = "./HIV-data-pipeline/schemas/scRNASeq.jsonld"
 # inputMModelLocation = "./HIV-data-pipeline/schemas/HTAPP.jsonld"
-inputMModelLocation = "./data/schema_org_schemas/HIV.jsonld"
+inputMModelLocation = "./data/schema_org_schemas/HIV_v1.1.jsonld"
 inputMModelLocationType = "local"
 # datasetType = "scRNASeq"
 # modelType = "TableA"

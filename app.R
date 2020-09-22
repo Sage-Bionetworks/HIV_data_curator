@@ -506,7 +506,7 @@ schema_to_display_lookup <- data.frame(schema_name, display_name)
 
     ### IF an assay component selected 
     ### and adds entityID, saves it as synapse_storage_manifest.csv, then associates with synapse files 
-    if ( input$template_type %in% list("v1.0") ) {
+    if ( input$template_type %in% list("v1.1") ) {
       
       ### make into a csv or table for assay components
       ### already has entityId
